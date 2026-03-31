@@ -19,75 +19,51 @@ STEP-4: Arrange the characters of the keyword in sorted order and the correspond
 STEP-5: Read the characters row wise or column wise in the former order to get the cipher text.
 
 # PROGRAM
-```PYTHON
+```C
 #include <stdio.h>
 #include <string.h>
 
-int main()
-{
-    int i, j, k, l;
-    char a[20], c[20], d[20];
-    
-    printf("\n\t\tRAIL FENCE TECHNIQUE\n");
-    
-    // Safely getting input string using fgets instead of gets
-    printf("\nEnter the input string: ");
-    fgets(a, sizeof(a), stdin);
-    
-    // Removing the newline character if it exists
-    a[strcspn(a, "\n")] = '\0';
-    l = strlen(a); // Get the length of the input string
-    
-    // Rail fence encryption: first collect even indices, then odd
-    j = 0;
-    // First pass: even indices (0, 2, 4, ...)
-    for (i = 0; i < l; i += 2)
-    {
-        c[j++] = a[i];
+int main() {
+    char text[100];
+    int key;
+
+    printf("Enter text: ");
+    scanf(" %[^\n]", text);
+
+    printf("Enter key: ");
+    scanf("%d", &key);
+
+    int len = strlen(text);
+    char rail[key][len];
+
+    // Fill with space
+    for (int i = 0; i < key; i++)
+        for (int j = 0; j < len; j++)
+            rail[i][j] = ' ';
+
+    int row = 0, dir = 1;
+
+    // Zig-zag fill
+    for (int i = 0; i < len; i++) {
+        rail[row][i] = text[i];
+
+        if (row == 0)
+            dir = 1;
+        else if (row == key - 1)
+            dir = -1;
+
+        row += dir;
     }
-    // Second pass: odd indices (1, 3, 5, ...)
-    for (i = 1; i < l; i += 2)
-    {
-        c[j++] = a[i];
-    }
-    c[j] = '\0'; // Null-terminate the encrypted string
-    
-    printf("\nCipher text after applying rail fence: %s\n", c);
-    
-    // Rail fence decryption
-    if (l % 2 == 0)
-    {
-        k = l / 2;
-    }
-    else
-    {
-        k = (l / 2) + 1;
-    }
-    
-    // Reconstructing the original text
-    j = 0;
-    // First half of ciphertext goes to even positions
-    for (i = 0; i < k; i++)
-    {
-        d[j] = c[i];
-        j += 2;
-    }
-    
-    j = 1;
-    // Second half of ciphertext goes to odd positions
-    for (i = k; i < l; i++)
-    {
-        d[j] = c[i];
-        j += 2;
-    }
-    d[l] = '\0'; // Null-terminate the decrypted string
-    
-    printf("\nText after decryption: %s\n", d);
-    
-       
+
+    // Print encrypted text
+    printf("Encrypted text: ");
+    for (int i = 0; i < key; i++)
+        for (int j = 0; j < len; j++)
+            if (rail[i][j] != ' ')
+                printf("%c", rail[i][j]);
+
     return 0;
 }
-
 ```
 
 
